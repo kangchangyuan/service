@@ -13,9 +13,45 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// 核心表 ************
 model User {
-  id    Int     @id @default(autoincrement())
-  phone String  @unique
-  name  String?
-  password  String
+  id       Int     @id @default(autoincrement())
+  phone    String  @unique
+  name     String?
+  password String
+  files    File[]
+}
+
+model File {
+  id           Int    @id @default(autoincrement())
+  originalname String
+  path         String @unique
+  size         Int
+  mimetype     String
+  user         User   @relation(fields: [userId], references: [id])
+  userId       Int
+}
+
+// 业务表 ****************
+// 短链接
+model ShortLink {
+  id          Int              @id @default(autoincrement())
+  originalUrl String
+  shortUrl    String           @unique
+  createdAt   DateTime         @default(now())
+  // 表关联
+  clicks      ShortLinkClick[]
+}
+
+// 定义 ShortLinkClick 表
+model ShortLinkClick {
+  id          Int      @id @default(autoincrement())
+  shortLinkId Int
+  ipAddress   String
+  userAgent   String
+  referer     String?
+  createdAt   DateTime @default(now())
+
+  // 定义 ShortLinkClick 表与 ShortLink 表之间的关系
+  shortLink ShortLink @relation(fields: [shortLinkId], references: [id])
 }

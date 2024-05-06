@@ -1,6 +1,10 @@
 
+import express from 'express';
+import cors from 'cors';
+
 import userRouter from '../core/user/user.router.js';
 import authRouter from '../core/auth/auth.router.js';
+import fileRouter from '../core/file/file.router.js';
 
 import appRouter from './app.router.js';
 import { defaultErrorHandler } from './app.middleware.js';
@@ -8,8 +12,7 @@ import { defaultErrorHandler } from './app.middleware.js';
 import { ALLOW_ORIGIN } from './app.config.js';
 import { currentUser } from '../core/auth/auth.middleware.js';
 
-import express from 'express';
-import cors from 'cors';
+
 /**
  * 创建应用
  */
@@ -40,6 +43,7 @@ app.use(
 app.use(
   userRouter,
   authRouter,
+  fileRouter,
   appRouter,
 );
 

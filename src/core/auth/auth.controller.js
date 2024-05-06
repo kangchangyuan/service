@@ -1,8 +1,9 @@
+import bcrypt from 'bcryptjs'
+import _ from 'lodash'
+
 import { BadRequestError } from '../../utils/httpError.js'
 import { getUserByPhone } from '../user/user.service.js'
 import { signToken } from './auth.service.js'
-import bcrypt from 'bcryptjs'
-import _ from 'lodash'
 
 /**
  * 登录

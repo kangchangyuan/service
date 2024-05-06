@@ -1,13 +1,22 @@
-import { NotFoundError } from '../../utils/httpError.js'
-import * as userService from './user.service.js'
 import _ from 'lodash'
+
+import {
+  getUserById,
+  getUsers,
+  updateUser,
+  createUser,
+  deleteUser,
+} from './user.service.js'
+
+import { NotFoundError } from '../../utils/httpError.js'
+
 /**
  * 用户列表
  */
 export const index = async (request, response, next) => {
   try {
     const { sort, filter, pagination } = request
-    const data = await userService.getUsers({ sort, filter, pagination })
+    const data = await getUsers({ sort, filter, pagination })
     response.send(data)
   } catch (error) {
     next(error)
@@ -20,7 +29,7 @@ export const index = async (request, response, next) => {
 export const store = async (request, response, next) => {
   const { name, password, phone } = request.body
   try {
-    const data = await userService.createUser({ name, phone, password })
+    const data = await createUser({ name, phone, password })
     response.status(201).send(_.omit(data, ['password']))
   } catch (error) {
     next(error)
@@ -36,7 +45,7 @@ export const show = async (request, response, next) => {
 
   // 调取用户
   try {
-    const user = await userService.getUserById(parseInt(userId, 10))
+    const user = await getUserById(parseInt(userId, 10))
 
     if (!user) {
       return next(new NotFoundError('没有找到这个用户'))
@@ -54,11 +63,27 @@ export const show = async (request, response, next) => {
  */
 export const update = async (request, response, next) => {
   const { userId } = request.params
-  const user = _.pick(request.body,['name'])
+  const user = _.pick(request.body, ['name'])
   try {
-    const data = await userService.updateUser(parseInt(userId, 10), user)
-    response.send(_.omit(data,['password']));
+    const data = await updateUser(parseInt(userId, 10), user)
+    response.send(_.omit(data, ['password']))
   } catch (error) {
+    next(error)
+  }
+}
+
+/**
+ * 删除
+ */
+export const destroy = async (request, response, next) => {
+  const { userId } = request.params
+  console.log(userId)
+  try {
+    const data = await deleteUser(parseInt(userId, 10))
+    console.log(data)
+    response.status(201).send(_.omit(data, ['password']))
+  } catch (error) {
+    console.log(error)
     next(error)
   }
 }

@@ -71,3 +71,13 @@ export const updateUser = async (userId,user) => {
     data:user
   })
 }
+/**
+ * 删除用户信息
+ */
+export const deleteUser = async (userId) => {
+  return await prisma.user.delete({
+    where:{
+      id:userId
+    },
+  })
+}
